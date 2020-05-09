@@ -1,0 +1,24 @@
+from __future__ import print_function
+  
+import json
+import boto3
+  
+print('Loading function')
+  
+def lambda_handler(event, context):
+  
+    # Parse the JSON message 
+    eventText = json.dumps(event)
+    TemperatureC = event["TempCel"];
+    timestamp = event["timestamp"]
+    TemperatureK = str(float(TemperatureC) + 273.15);
+  
+    # Print the parsed JSON message to the console. You can view this text in the Monitoring tab in the AWS Lambda console or in the Amazon CloudWatch Logs console.
+    print('Timestamp: ', timestamp)
+    print('TemperatureK: ', TemperatureK)
+
+    
+    dynamodb = boto3.client('dynamodb')
+    dynamodb.put_item(TableName='TemperaturePine', Item={'timestamp': {'S':timestamp},'Temperature_Kelvin':{'S':TemperatureK}})
+    
+
